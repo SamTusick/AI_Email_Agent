@@ -1,3 +1,7 @@
 .venv
 credentials.json
 token.json
+
+# Testing files
+test_gmailAPI.py
+test_ollama.py
