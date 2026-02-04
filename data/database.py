@@ -13,7 +13,8 @@ def init_database():
     cur = conn.cursor() # Set up DB cursor to be able to fetch and execute sql
 
     # USERS TABLE
-    cur.execute("""CREATE TABLE IF NOT EXISTS users (
+    cur.execute("""CREATE TABLE IF NOT EXISTS users 
+                        (
                             email TEXT PRIMARY KEY,
                             name TEXT,
                             email_count INTEGER DEFAULT 0,
@@ -25,7 +26,8 @@ def init_database():
                 """)
     
     # EMAILS TABLE
-    cur.execute("""CREATE TABLE IF NOT EXISTS emails (
+    cur.execute("""CREATE TABLE IF NOT EXISTS emails 
+                        (
                             id TEXT PRIMARY KEY,
                             sender_email TEXT,
                             subject TEXT,
