@@ -47,6 +47,8 @@ def init_database():
     print("Database Initialized")
 
 def get_user(email):
+    print("Getting user with email:", email, "........")
+
     conn = None
     try:
         conn = sqlite3.connect(DB_PATH)
@@ -70,6 +72,7 @@ def get_user(email):
             conn.close()
 
 def create_user(email,name):
+    print("Creating user for:", name, " with email:", email, "........")
     conn = None
 
     try:
@@ -83,14 +86,72 @@ def create_user(email,name):
         conn.commit()
         return cur.lastrowid
 
+    except sqlite3.IntegrityError:
+        print("Databse error:", email, "already exists")
     except sqlite3.Error as e:
         print(f"Database error: {e}")
         return None
-    except sqlite3.IntegrityError:
-        print("Databse error: '{email}' already exists")
     finally:
         if conn:
             conn.close()
 
+def update_user(email, name = None, email_count = None, avg_urgency = None, common_email_type = None, common_email_topic = None, role = None):
+    print("Updating user with email:", email, "........")
+    conn = None
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+
+        cur.execute(""" UPDATE users
+                        SET name = COALESCE(?, name),
+                            email_count = COALESCE(?, email_count),
+                            avg_urgency = COALESCE(?, avg_urgency),
+                            common_email_type = COALESCE(?, common_email_type),
+                            common_email_topic = COALESCE(?, common_email_topic),
+                            role = COALESCE(?, role)
+                        WHERE email = ?
+                    """, (name, email_count, avg_urgency, common_email_type, common_email_topic, role, email))
+        
+        conn.commit()
+        return cur.rowcount > 0
+    
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+def insert_email(id, sender_email, subject, body, email_type=None, 
+                 urgency=None, sentiment=None, intent=None, 
+                 actions_done=None, processed=False):
+    
+    print("Inserting email from", sender_email, "into database.............." )   
+
+    conn = None
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+
+        cur.execute(""" INSERT INTO emails
+                    (id, sender_email, subject, body, email_type, urgency, sentiment, intent, actions_done, processed)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (id, sender_email, subject, body, email_type, urgency,
+                        sentiment, intent, actions_done, processed))
+
+        conn.commit()
+
+        print("Email inserted successfully")
+        return id
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
+            
 if __name__ == "__main__":
     init_database()
