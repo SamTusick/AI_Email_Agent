@@ -69,5 +69,28 @@ def get_user(email):
         if conn:
             conn.close()
 
+def create_user(email,name):
+    conn = None
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+
+        cur.execute(""" INSERT  into users (email,name) 
+                        VALUES (?,?)
+                    """, (email, name))
+        
+        conn.commit()
+        return cur.lastrowid
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
+    except sqlite3.IntegrityError:
+        print("Databse error: '{email}' already exists")
+    finally:
+        if conn:
+            conn.close()
+
 if __name__ == "__main__":
     init_database()
