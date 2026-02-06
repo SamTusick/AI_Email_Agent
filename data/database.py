@@ -46,6 +46,28 @@ def init_database():
     conn.close()
     print("Database Initialized")
 
+def get_user(email):
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row  # Returns dict-like rows
+        cur = conn.cursor()
+        
+        cur.execute("""
+            SELECT * 
+            FROM users
+            WHERE email = ?
+        """, (email,))
+        
+        user = cur.fetchone()
+        return dict(user) if user else None  # Return as dict or None
+        
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     init_database()
