@@ -152,6 +152,27 @@ def insert_email(id, sender_email, subject, body, email_type=None,
     finally:
         if conn:
             conn.close()
-            
+
+# USE ONLY FOR TESTING
+def clear_database():
+    """Clear all data but keep tables (for testing)"""
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        
+        # Delete all data
+        cur.execute("DELETE FROM emails")
+        cur.execute("DELETE FROM users")
+        
+        conn.commit()
+        print("Database cleared (tables kept)")
+        
+    except sqlite3.Error as e:
+        print(f"Error clearing database: {e}")
+    finally:
+        if conn:
+            conn.close()   
+
 if __name__ == "__main__":
     init_database()
