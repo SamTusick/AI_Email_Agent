@@ -123,7 +123,7 @@ def update_user(email, name = None, email_count = None, avg_urgency = None, comm
         if conn:
             conn.close()
 
-def insert_email(id, sender_email, subject, body, email_type=None, 
+def insert_email(id, sender_email, subject, body, type=None, 
                  urgency=None, sentiment=None, intent=None, 
                  actions_done=None, processed=False):
     
@@ -136,9 +136,9 @@ def insert_email(id, sender_email, subject, body, email_type=None,
         cur = conn.cursor()
 
         cur.execute(""" INSERT INTO emails
-                    (id, sender_email, subject, body, email_type, urgency, sentiment, intent, actions_done, processed)
+                    (id, sender_email, subject, body, type, urgency, sentiment, intent, actions_done, processed)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (id, sender_email, subject, body, email_type, urgency,
+                    """, (id, sender_email, subject, body, type, urgency,
                         sentiment, intent, actions_done, processed))
 
         conn.commit()
@@ -153,7 +153,7 @@ def insert_email(id, sender_email, subject, body, email_type=None,
         if conn:
             conn.close()
 
-# USE ONLY FOR TESTING
+# USE ONLY FOR TESTING  
 def clear_database():
     """Clear all data but keep tables (for testing)"""
     conn = None
