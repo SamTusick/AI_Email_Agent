@@ -2,5 +2,6 @@
 credentials.json
 token.json
 __pycache__
+
 # Testing files
 testing
